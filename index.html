@@ -1,0 +1,1683 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Przemysław Pytlarz - UI/UX Designer | Game & Software Developer</title>
+    <link rel="shortcut icon" href="emojiIcon.svg" type="image/x-icon">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #111;
+            color: #eee;
+            overflow: hidden; 
+            overscroll-behavior-y: none;
+        }
+
+        .layout-container {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* ----- LANGUAGE SWITCHER ----- */
+        .lang-switcher {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            opacity: 0.5;
+            filter: grayscale(40%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+        }
+
+        .lang-btn:hover {
+            opacity: 0.85;
+            transform: scale(1.1);
+        }
+
+        .lang-btn.active {
+            opacity: 1;
+            filter: grayscale(0%);
+            transform: scale(1.15);
+            filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.5));
+        }
+
+        /* ----- BOTTOM LINKS (GITHUB & EMAIL) ----- */
+        .bottom-links {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            z-index: 100;
+            display: flex;
+            gap: 20px;
+        }
+
+        .bottom-link-btn {
+            background: transparent;
+            border: none;
+            color: #666; 
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            cursor: pointer;
+            padding: 10px;
+            position: relative;
+        }
+
+        .bottom-link-btn:hover {
+            color: #fff;
+            transform: scale(1.05);
+            text-shadow: 0px 0px 15px rgba(255, 255, 255, 0.5); 
+        }
+
+        .bottom-link-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            right: 10px; 
+            width: 0%;
+            height: 1px;
+            background-color: #fff;
+            transition: width 0.3s ease;
+        }
+
+        .bottom-link-btn:hover::after {
+            width: calc(100% - 20px);
+            right: auto;
+            left: 10px; 
+        }
+
+        /* ----- MOBILE MENU BUTTON ----- */
+        .mobile-menu-btn {
+            display: none;
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 200;
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            cursor: pointer;
+        }
+
+        /* ----- LEFT PANEL (SIDEBAR MENU) ----- */
+        .sidebar {
+            width: 40%; 
+            min-width: 450px; 
+            max-width: 600px; 
+            height: 100%;
+            overflow: hidden;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 40px 0 0 0; 
+            background: #111111; 
+            position: relative;
+            z-index: 50; 
+            display: flex;
+            flex-direction: column;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.8);
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .sidebar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .header {
+            padding: 0 40px 30px 40px;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #888;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* ----- CATEGORIES AND BRACKETS (SCROLLABLE AREA) ----- */
+        .sidebar-content {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            padding-bottom: 40px; 
+            overflow-y: auto;
+            scrollbar-width: none; 
+            -ms-overflow-style: none; 
+        }
+        
+        .sidebar-content::-webkit-scrollbar {
+            display: none; 
+        }
+
+        .category-wrapper {
+            display: flex;
+            flex-direction: row;
+            margin-bottom: 25px; 
+        }
+
+        .category-side {
+            width: 60px; 
+            flex-shrink: 0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .category-bracket {
+            position: absolute;
+            right: 12px;
+            top: 2px;
+            bottom: 2px;
+            width: 8px;
+            border-left: 1px solid #444;
+            border-top: 1px solid #444;
+            border-bottom: 1px solid #444;
+            border-radius: 4px 0 0 4px; 
+            transition: border-color 0.3s ease;
+        }
+
+        .category-name {
+            position: absolute;
+            transform: rotate(-90deg);
+            white-space: nowrap;
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #666;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .category-wrapper:hover .category-bracket { border-color: #888; }
+        .category-wrapper:hover .category-name { color: #aaa; }
+
+        .nav-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-right: 40px;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            position: relative;
+            padding: 15px 30px 15px 40px;
+            font-size: 1.1rem;
+            color: #666;
+            background: #1a1a1a;
+            border-radius: 0 12px 12px 0;
+            border-left: 6px solid #2a2a2a; 
+            width: 80%;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: #fff;
+            font-size: 1.6rem;
+            font-weight: 700;
+            padding: 35px 30px 35px 40px;
+            width: 100%;
+            transform: translateX(15px);
+            border-left: 8px solid var(--item-color, #4285f4);
+            background: #222;
+            box-shadow: -5px 15px 25px rgba(0,0,0,0.5);
+            z-index: 2;
+        }
+
+        .nav-item::before {
+            content: attr(data-index);
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.7rem;
+            color: #444;
+            transition: opacity 0.3s;
+        }
+        
+        .nav-item:hover::before, .nav-item.active::before {
+            opacity: 0;
+        }
+
+        /* ----- RIGHT PANEL (BACKGROUND AND FLASHLIGHT) ----- */
+        .content-area {
+            flex-grow: 1;
+            position: relative;
+            overflow: hidden;
+            background-color: #050505; 
+        }
+
+        .background-layer {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .interactive-bg {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            will-change: background, opacity;
+            transition: background 0.1s ease;
+        }
+
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(70px); 
+            opacity: 0.05; 
+            transition: background-color 1.2s ease,
+                        top 1.5s cubic-bezier(0.2, 0.8, 0.2, 1),
+                        left 1.5s cubic-bezier(0.2, 0.8, 0.2, 1),
+                        width 1.2s ease,
+                        height 1.2s ease;
+            will-change: transform, top, left, opacity;
+        }
+
+        /* ----- VERTICAL PAGINATION (DOTS ON THE RIGHT) ----- */
+        .pagination-dots {
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .pagination-dots.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .dot.active {
+            background: var(--item-color, #fff);
+            border-color: var(--item-color, #fff);
+            box-shadow: 0 0 10px var(--item-color, #fff);
+            transform: scale(1.3);
+        }
+
+        /* ----- SCROLLER ----- */
+        .scroll-container {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 10;
+            overflow-y: auto;
+            scroll-snap-type: y mandatory; 
+            scrollbar-width: none; 
+            -ms-overflow-style: none;
+            scroll-behavior: smooth;
+        }
+        .scroll-container::-webkit-scrollbar {
+            display: none; 
+        }
+
+        .project-details {
+            display: none;
+            width: 100%;
+        }
+
+        .project-details.active {
+            display: block;
+        }
+
+        .snap-page {
+            width: 100%;
+            height: 100vh;
+            scroll-snap-align: start; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 100px 0 80px;
+        }
+
+        .snap-content {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        /* ----- ELEMENT ANIMATIONS ----- */
+        .anim-item {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .snap-page.in-view .anim-item {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .snap-page.in-view .anim-item:nth-child(1) { transition-delay: 0.05s; }
+        .snap-page.in-view .anim-item:nth-child(2) { transition-delay: 0.10s; }
+        .snap-page.in-view .anim-item:nth-child(3) { transition-delay: 0.15s; }
+        .snap-page.in-view .anim-item:nth-child(4) { transition-delay: 0.20s; }
+        .snap-page.in-view .anim-item:nth-child(5) { transition-delay: 0.25s; }
+
+        .snap-page:not(.in-view) .anim-item {
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+            transition-delay: 0s !important;
+        }
+
+        /* ----- CONTENT STYLES ----- */
+        .project-title {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            letter-spacing: -2px;
+            line-height: 1.1;
+            text-shadow: 0px 4px 30px rgba(0,0,0,0.8);
+            color: var(--item-color, #fff);
+        }
+
+        .project-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .project-desc {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #d0d0d0;
+            margin-bottom: 40px;
+        }
+
+        .project-link {
+            display: inline-block;
+            padding: 12px 30px;
+            border: 2px solid var(--item-color, #fff);
+            color: var(--item-color, #fff);
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .project-link:hover {
+            background: var(--item-color, #fff);
+            color: #111;
+            box-shadow: 0px 0px 20px var(--item-color);
+        }
+
+        .scroll-indicator {
+            margin-top: 50px;
+            color: #888;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .scroll-arrow {
+            display: inline-block;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .page-heading {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--item-color, #fff);
+            text-shadow: 0px 2px 15px rgba(0,0,0,0.5);
+        }
+
+        .page-text {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            color: #bbb;
+        }
+
+        .page-image {
+            width: 100%;
+            max-height: 55vh;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            margin-bottom: 25px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .page-caption {
+            font-size: 0.95rem;
+            color: #888;
+            font-style: italic;
+            border-left: 3px solid var(--item-color, #fff);
+            padding-left: 15px;
+        }
+
+        /* ----- SKILLS / TECHNOLOGIES GRID (CENTERED & STRETCHED) ----- */
+        .skills-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center; 
+            align-items: stretch;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .skill-item {
+            width: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; 
+            text-align: center;
+            gap: 12px;
+            padding: 20px 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .skill-item:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            border-color: var(--item-color, rgba(255, 255, 255, 0.15));
+        }
+
+        .skill-icon {
+            width: 55px;
+            height: 55px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+        }
+
+        .skill-name {
+            font-size: 0.9rem;
+            color: #ccc;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            line-height: 1.3;
+        }
+
+        /* ----- CUSTOM LIST STYLES (MOVIES/GAMES) ----- */
+        .custom-list {
+            list-style: none;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .custom-list-item {
+            display: flex;
+            align-items: center; 
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 1.1rem;
+            color: #ddd;
+            line-height: 1.5;
+            transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .custom-list-item:hover {
+            transform: translateX(10px);
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--item-color, rgba(255, 255, 255, 0.15));
+        }
+
+        .list-bullet {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--item-color, #fff);
+            flex-shrink: 0;
+            box-shadow: 0 0 8px var(--item-color, #fff);
+        }
+
+
+        /* =========================================
+           MEDIA QUERIES - RWD FOR MOBILE DEVICES
+           ========================================= */
+        @media (max-width: 900px) {
+            
+            .content-area {
+                width: 100vw;
+            }
+
+            .sidebar {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 85%;
+                min-width: 300px;
+                max-width: 400px;
+                height: 100%;
+                z-index: 200;
+                transform: translateX(-100%); 
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .menu-overlay {
+                display: none;
+                position: absolute;
+                top: 0; left: 0;
+                width: 100vw; height: 100vh;
+                background: rgba(0,0,0,0.6);
+                z-index: 150;
+                backdrop-filter: blur(4px);
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+
+            .menu-overlay.active {
+                display: block;
+                opacity: 1;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .lang-switcher {
+                top: 20px;
+                right: 20px;
+                gap: 10px;
+            }
+            .lang-btn {
+                font-size: 1.4rem;
+            }
+
+            .bottom-links {
+                top: 25px; 
+                bottom: auto;
+                right: 120px;
+                gap: 10px;
+            }
+
+            .bottom-link-btn {
+                font-size: 0.75rem;
+                padding: 5px;
+            }
+
+            .pagination-dots {
+                right: 15px;
+                gap: 10px;
+            }
+            .dot {
+                width: 8px; height: 8px;
+            }
+
+            .snap-page {
+                padding: 0 40px 0 30px; 
+            }
+            
+            .project-title {
+                font-size: 2.5rem;
+            }
+
+            .page-heading {
+                font-size: 1.8rem;
+            }
+
+            .project-desc, .page-text {
+                font-size: 1rem;
+            }
+
+            .nav-item {
+                font-size: 1rem;
+                padding: 12px 20px 12px 30px;
+            }
+            
+            .nav-item:hover, .nav-item.active {
+                font-size: 1.2rem;
+                padding: 20px 20px 20px 30px;
+                transform: translateX(10px);
+            }
+            
+            .skills-grid {
+                gap: 15px;
+            }
+
+            .skill-item {
+                width: 100px;
+                padding: 15px;
+            }
+
+            .custom-list-item {
+                font-size: 1rem;
+                padding: 12px 15px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="layout-container">
+        
+        <div class="lang-switcher">
+            <button class="lang-btn" id="btn-en" onclick="setLanguage('en')" title="English">🇬🇧</button>
+            <button class="lang-btn" id="btn-pl" onclick="setLanguage('pl')" title="Polski">🇵🇱</button>
+        </div>
+
+        <!-- Bottom Links Container (GitHub & Email) -->
+        <div class="bottom-links">
+            <a href="https://github.com/" target="_blank" class="bottom-link-btn" id="ui-github">
+                GitHub
+            </a>
+            <a href="mailto:twój.email@gmail.com" class="bottom-link-btn" id="ui-contact">
+                Email
+            </a>
+        </div>
+
+        <!-- Overlay darkening the screen when menu is open -->
+        <div class="menu-overlay" id="menu-overlay" onclick="toggleMobileMenu()"></div>
+
+        <!-- Mobile menu button at the bottom of the screen -->
+        <div class="mobile-menu-btn" id="mobile-menu-btn" onclick="toggleMobileMenu()">
+            Menu
+        </div>
+
+        <!-- Left panel (projects menu) -->
+        <aside class="sidebar" id="sidebar">
+            <div class="header">
+                <h1 id="ui-title">Moje Portfolio</h1>
+                <p id="ui-subtitle">Game & Software Developer</p>
+            </div>
+            
+            <div class="sidebar-content" id="sidebar-content"></div>
+        </aside>
+
+        <!-- Main content screen (right panel) -->
+        <main class="content-area" id="content-area">
+            
+            <div class="background-layer">
+                <div class="interactive-bg" id="interactive-bg"></div>
+                <div class="floating-shape" id="shape1"></div>
+                <div class="floating-shape" id="shape2"></div>
+            </div>
+
+            <div class="pagination-dots" id="pagination-dots"></div>
+
+            <div class="scroll-container" id="scroll-container"></div>
+
+        </main>
+
+    </div>
+
+    <script>
+        const staticTexts = {
+            en: { 
+                title: "Przemysław Pytlarz", 
+                subtitle: "UI/UX Designer | Game & Software Developer", 
+                btnDetails: "View project",
+                contact: "Email",
+                github: "GitHub",
+                scrollDown: "Scroll to discover",
+                menuBtn: "Pojects"
+            },
+            pl: { 
+                title: "Przemysław Pytlarz", 
+                subtitle: "UI/UX Designer | Game & Software Developer", 
+                btnDetails: "Zobacz projekt",
+                contact: "Email",
+                github: "GitHub",
+                scrollDown: "Przewiń aby odkryć",
+                menuBtn: "Projekty"
+            }
+        };
+
+        const portfolioData = [
+            // ==========================================
+            // KATEGORIA 1: O MNIE
+            // ==========================================
+            {
+                categoryName: { en: "About me", pl: "O mnie" },
+                items: [
+                    {
+                        id: 'education-skills',
+                        color: '#3b82f6', 
+                        blobs: {
+                            shape1: { bg: '#3b82f6', top: '10%', left: '60%', size: '400px' },
+                            shape2: { bg: '#2563eb', top: '50%', left: '-10%', size: '500px' }
+                        },
+                        title: { en: 'Education & Skills', pl: 'Edukacja i Umiejętności' },
+                        pages: [
+                            {
+                                type: 'hero',
+                                tags: { en: ['Politechnika Śląska', 'Technik Programista', 'Frontend', 'Backend'], pl: ['Politechnika Śląska', 'Technik Programista', 'Frontend', 'Backend'] },
+                                desc: {
+                                    en: 'First-year IT student (practical profile) at the Silesian University of Technology and a certified IT technician. I specialize in UI/UX design but I also enjoy working on the backend.',
+                                    pl: 'Jestem studentem pierwszego roku na Politechnice Śląskiej na kierunku Informatyka (profil praktyczny). Posiadam tytuł technika programisty ze szkoły średniej. Głównie zajmuję się designem UI i UX, ale równie chętnie rozwijam warstwę back-endową.'
+                                }
+                            },
+                            {
+                                type: 'skills',
+                                heading: { en: 'Frontend & UI/UX Stack', pl: 'Technologie: UI/UX & Frontend' },
+                                text: { 
+                                    en: 'Technologies I use for building interfaces and web applications.', 
+                                    pl: 'Technologie, których używam do budowy interfejsów i aplikacji.' 
+                                },
+                                items: [
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg', name: 'HTML5' },
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg', name: 'CSS3' },
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg', name: 'JavaScript' },
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg', name: 'TypeScript' },
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/angularjs/angularjs-original.svg', name: 'Angular' },
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vuejs/vuejs-original.svg', name: 'Vue.js' },
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg', name: 'Figma' }
+                                ]
+                            },
+                            {
+                                type: 'skills',
+                                heading: { en: 'Backend Stack', pl: 'Technologie: Backend' },
+                                text: { 
+                                    en: 'Tools and languages I use for server-side logic and systems.', 
+                                    pl: 'Narzędzia i języki, w których rozwijam warstwę serwerową.' 
+                                },
+                                items: [
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg', name: 'Node.js' },
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/csharp/csharp-original.svg', name: 'C#' },
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg', name: 'Python' },
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg', name: 'PHP' },
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg', name: 'C++' },
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/rust/rust-original.svg', name: 'Rust' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: 'gamedev-hobby',
+                        color: '#f59e0b', 
+                        blobs: {
+                            shape1: { bg: '#f59e0b', top: '40%', left: '70%', size: '450px' },
+                            shape2: { bg: '#d97706', top: '-10%', left: '10%', size: '350px' }
+                        },
+                        title: { en: 'Game Development', pl: 'Game Development' },
+                        pages: [
+                            {
+                                type: 'hero',
+                                tags: { en: ['Unreal Engine 5', 'Blueprints', 'C++'], pl: ['Unreal Engine 5', 'Blueprints', 'C++'] },
+                                desc: {
+                                    en: 'In my free time, I dive into game development using Unreal Engine 5.',
+                                    pl: 'Hobbystycznie zajmuję się tworzeniem gier w silniku Unreal Engine 5.'
+                                }
+                            },
+                            {
+                                type: 'skills',
+                                heading: { en: 'Unreal Engine', pl: 'Unreal Engine' },
+                                text: { 
+                                    en: 'The core tools I use for building games.', 
+                                    pl: 'Moje narzędzia do tworzenia gier.' 
+                                },
+                                items: [
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/unrealengine/unrealengine-original.svg', name: 'Unreal Engine 5' },
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg', name: 'C++' },
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/blender/blender-original.svg', name: 'Blender'}
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+
+            // ==========================================
+            // KATEGORIA 2: HOBBY (ZAINTERESOWANIA)
+            // ==========================================
+            {
+                categoryName: { en: "Interests", pl: "Hobby" },
+                items: [
+                    {
+                        id: 'sports-editing',
+                        color: '#10b981',
+                        blobs: {
+                            shape1: { bg: '#10b981', top: '20%', left: '10%', size: '400px' },
+                            shape2: { bg: '#047857', top: '70%', left: '60%', size: '500px' }
+                        },
+                        title: { en: 'Sports & Video Editing', pl: 'Sport i Montaż Wideo' },
+                        pages: [
+                            {
+                                type: 'hero',
+                                tags: { en: ['Basketball', 'Swimming', 'DaVinci Resolve'], pl: ['Koszykówka', 'Pływanie', 'DaVinci Resolve'] },
+                                desc: {
+                                    en: 'I love staying active through playing basketball and swimming. Creatively, I am interested in video editing using DaVinci Resolve.',
+                                    pl: 'Gdy odpoczywam od kodu, spędzam czas grając w koszykówkę lub pływając. Kreatywnie realizuję się montując wideo w DaVinci Resolve.'
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        id: 'popculture',
+                        color: '#8b5cf6',
+                        blobs: {
+                            shape1: { bg: '#8b5cf6', top: '-10%', left: '60%', size: '480px' },
+                            shape2: { bg: '#6d28d9', top: '60%', left: '-5%', size: '420px' }
+                        },
+                        title: { en: 'Popculture', pl: 'Kino, Seriale i Manga' },
+                        pages: [
+                            {
+                                type: 'hero',
+                                tags: { en: ['Masterpieces', 'Storytelling', 'Cinema'], pl: ['Arcydzieła', 'Fabuła', 'Kino'] },
+                                desc: {
+                                    en: 'I am fascinated by excellent storytelling. My absolute favorite masterpiece is "Monster" (Anime / Manga by Naoki Urasawa, 1994).',
+                                    pl: 'Fascynują mnie doskonałe historie. Moim absolutnie ulubionym dziełem wszech czasów jest "Monster" (Anime / Manga, Naoki Urasawa, 1994).'
+                                }
+                            },
+                            {
+                                type: 'list',
+                                heading: { en: 'Favorite Movies', pl: 'Ulubione Filmy' },
+                                text: { 
+                                    en: 'Cinematic masterpieces that captivated me.', 
+                                    pl: 'Filmowe arcydzieła, które urzekły mnie swoją formą i narracją.' 
+                                },
+                                items: [
+                                    { en: 'Memento (C. Nolan, 2000)', pl: 'Memento (reż. Christopher Nolan, 2000)' },
+                                    { en: 'No Country for Old Men (Coen Bros, 2007)', pl: 'To nie jest kraj dla starych ludzi (reż. Bracia Coen, 2007)' },
+                                    { en: 'Shutter Island (M. Scorsese, 2010)', pl: 'Wyspa tajemnic (reż. Martin Scorsese, 2010)' },
+                                    { en: 'The Game (D. Fincher, 1997)', pl: 'Gra (reż. David Fincher, 1997)' },
+                                    { en: 'The Prestige (C. Nolan, 2006)', pl: 'Prestiż (reż. Christopher Nolan, 2006)' },
+                                    { en: 'Fight Club (D. Fincher, 1999)', pl: 'Podziemny krąg (reż. David Fincher, 1999)' },
+                                    { en: 'Parasite (Bong Joon-ho, 2019)', pl: 'Parasite (reż. Bong Joon-ho, 2019)' },
+                                    { en: 'A Clockwork Orange (S. Kubrick, 1971)', pl: 'Mechaniczna pomarańcza (reż. Stanley Kubrick, 1971)' },
+                                    { en: '2001: A Space Odyssey (S. Kubrick, 1968)', pl: 'Odyseja kosmiczna 2001 (reż. Stanley Kubrick, 1968)' }
+                                ]
+                            },
+                            {
+                                type: 'list',
+                                heading: { en: 'Series & Manga', pl: 'Seriale, Manga i Anime' },
+                                text: { 
+                                    en: 'Long-form stories I would recommend to anyone.',
+                                    pl: 'Dłuższe formy, które poleciłbym każdemu.'
+                                },
+                                items: [
+                                    { en: 'Monster (Anime / Manga, N. Urasawa, 1994)', pl: 'Monster (Anime / Manga, twórca Naoki Urasawa, 1994)' },
+                                    { en: 'Tomodachi Game (Manga, M. Yamaguchi, 2013)', pl: 'Tomodachi Game (Manga, twórca Mikoto Yamaguchi, 2013)' },
+                                    { en: 'Death Note (T. Ohba/T. Obata, 2006)', pl: 'Death Note (twórcy T. Ohba i T. Obata, 2006)' },
+                                    { en: 'Breaking Bad (Vince Gilligan, 2008)', pl: 'Breaking Bad (twórca Vince Gilligan, 2008)' },
+                                    { en: 'Berserk (K. Miura, 1989)', pl: 'Berserk (twórca Kentaro Miura, 1989)' },
+                                    { en: 'Attack on Titan (H. Isayama, 2009)', pl: 'Attack on Titan (twórca Hajime Isayama, 2009)' },
+                                    { en: '100 Meters / Hyakuemu (K. Iwaisawa, 2025)', pl: '100 Metrów (Hyakuemu) (twórca Kenji Iwaisawa, 2025)' },
+                                    { en: 'Dexter (James Manos Jr., 2006)', pl: 'Dexter (twórca James Manos Jr., 2006)' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: 'favorite-games',
+                        color: '#ec4899', 
+                        blobs: {
+                            shape1: { bg: '#ec4899', top: '50%', left: '70%', size: '380px' },
+                            shape2: { bg: '#be185d', top: '-10%', left: '20%', size: '450px' }
+                        },
+                        title: { en: 'Favorite Games', pl: 'Ulubione Gry' },
+                        pages: [
+                            {
+                                type: 'hero',
+                                tags: { en: ['Game Loop', 'Story', 'Immersion'], pl: ['Game Loop', 'Historia', 'Immersja'] },
+                                desc: {
+                                    en: 'In my free time, I also enjoy playing games. As a game developer, I like to analyze their mechanics, and each of my favorite titles stands out in a particular area.',
+                                    pl: 'W wolnym czasie lubię również pograć. Jako twórca gier lubię analizować ich mechaniki. Każdy z moich ulubionych tytułów wyróżnia się w konkretnej dziedzinie.'
+                                }
+                            },
+                            {
+                                type: 'list',
+                                heading: { en: 'Titles that inspire me', pl: 'Tytuły, które mnie inspirują' },
+                                text: { 
+                                    en: 'Games that push the boundaries of their respective genres.', 
+                                    pl: 'Gry, które przesuwają granice swoich gatunków.' 
+                                },
+                                items: [
+                                    { en: 'Factorio (Wube Software) - Flawless game loop & pure addiction', pl: 'Factorio (Wube Software) – Perfekcyjna pętla rozgrywki i czyste uzależnienie' },
+                                    { en: 'Cyberpunk 2077 (CD Projekt Red) - Incredible story', pl: 'Cyberpunk 2077 (CD Projekt Red) – Niesamowita historia i świat' },
+                                    { en: 'Red Dead Redemption 2 (Rockstar) - Unmatched immersion', pl: 'Red Dead Redemption 2 (Rockstar Games) – Niedościgniona immersja' },
+                                    { en: 'Portal / Portal 2 (Valve) - Perfect execution of mechanics', pl: 'Portal i Portal 2 (Valve) – Genialne wykorzystanie mechaniki' },
+                                    { en: 'Superhot (Superhot Team) - Brilliant core idea', pl: 'Superhot (Superhot Team) – Unikalny i innowacyjny pomysł' }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+
+            // ==========================================
+            // KATEGORIA 3: PROJEKTY
+            // ==========================================
+            {
+                categoryName: { en: "Projects", pl: "Projekty" },
+                items: [
+                    {
+                        id: 'sketchnote',
+                        color: '#dd0031',
+                        blobs: {
+                            shape1: { bg: '#dd0031', top: '50%', left: '60%', size: '500px' },
+                            shape2: { bg: '#ff7700', top: '-20%', left: '10%', size: '350px' }
+                        },
+                        title: { en: 'SketchNote', pl: 'SketchNote' },
+                        pages: [
+                            {
+                                type: 'hero',
+                                tags: { en: ['Angular', 'Tauri', 'Rust'], pl: ['Angular', 'Tauri', 'Rust'] },
+                                desc: { 
+                                    en: 'Visual desktop app for managing projects and notes. Features an infinite canvas, drag & drop, and stores data locally for 100% privacy.', 
+                                    pl: 'Wizualna aplikacja desktopowa do zarządzania projektami i notatkami oparta na nieskończonym płótnie. Działa całkowicie lokalnie (prywatność 100%).' 
+                                },
+                                link: 'https://github.com/PrzemyslawPytlarz/SketchNote'
+                            },
+                            {
+                                type: 'image',
+                                src: 'README_img/screenshot0.png',
+                                caption: { en: 'Main application view', pl: 'Główny widok aplikacji' }
+                            },
+                            {
+                                type: 'skills',
+                                heading: { en: 'Tech Stack', pl: 'Technologie' },
+                                text: { en: 'Technologies used in the project.', pl: 'Technologie wykorzystane w projekcie.' },
+                                items: [
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/angularjs/angularjs-original.svg', name: 'Angular' },
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg', name: 'TypeScript' },
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/rust/rust-original.svg', name: 'Rust (Tauri)' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: 'notelist',
+                        color: '#fcd34d', 
+                        blobs: {
+                            shape1: { bg: '#fcd34d', top: '10%', left: '50%', size: '400px' },
+                            shape2: { bg: '#fbbf24', top: '60%', left: '-10%', size: '450px' }
+                        },
+                        title: { en: 'NoteList', pl: 'NoteList' },
+                        pages: [
+                            {
+                                type: 'hero',
+                                tags: { en: ['Angular', 'Tauri', 'JSON'], pl: ['Angular', 'Tauri', 'JSON'] },
+                                desc: { 
+                                    en: 'Modern desktop application for managing notes. Includes custom categories, advanced filtering, keyboard shortcuts, and 20 color themes.', 
+                                    pl: 'Nowoczesna aplikacja desktopowa do zarządzania notatkami. Posiada system własnych kategorii, zaawansowane filtry oraz potężny system motywów.' 
+                                },
+                                link: 'https://github.com/PrzemyslawPytlarz/NoteList'
+                            },
+                            {
+                                type: 'image',
+                                src: 'README_img/notes.png',
+                                caption: { en: 'Notes list interface', pl: 'Interfejs listy notatek' }
+                            },
+                            {
+                                type: 'skills',
+                                heading: { en: 'Tech Stack', pl: 'Technologie' },
+                                text: { en: 'Technologies powering NoteList.', pl: 'Technologie napędzające NoteList.' },
+                                items: [
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/angularjs/angularjs-original.svg', name: 'Angular' },
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg', name: 'TypeScript' },
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/rust/rust-original.svg', name: 'Rust' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: 'cataclysm',
+                        color: '#991b1b', 
+                        blobs: {
+                            shape1: { bg: '#991b1b', top: '30%', left: '70%', size: '420px' },
+                            shape2: { bg: '#7f1d1d', top: '-10%', left: '0%', size: '380px' }
+                        },
+                        title: { en: 'CATaclysm', pl: 'CATaclysm' },
+                        pages: [
+                            {
+                                type: 'hero',
+                                tags: { en: ['HTML', 'CSS', 'Vanilla JS'], pl: ['HTML', 'CSS', 'Vanilla JS'] },
+                                desc: { 
+                                    en: 'Strategic browser-based card game focused on deck-building, boss battles, and base progression. Built completely without external libraries.', 
+                                    pl: 'Strategiczna przeglądarkowa gra karciana polegająca na budowaniu talii i walce z bossami. Stworzona całkowicie bez zewnętrznych bibliotek.' 
+                                },
+                                link: 'https://github.com/PrzemyslawPytlarz/CATaclysm'
+                            },
+                            {
+                                type: 'image',
+                                src: 'README_img/9.gif',
+                                caption: { en: 'Gameplay in action', pl: 'Rozgrywka w akcji' }
+                            },
+                            {
+                                type: 'skills',
+                                heading: { en: 'Tech Stack', pl: 'Technologie' },
+                                text: { en: 'Pure frontend implementation without frameworks.', pl: 'Czysty frontend bez użycia frameworków.' },
+                                items: [
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg', name: 'HTML5' },
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg', name: 'CSS3' },
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg', name: 'JavaScript' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: 'recvoicer',
+                        color: '#06b6d4',
+                        blobs: {
+                            shape1: { bg: '#06b6d4', top: '40%', left: '-5%', size: '480px' },
+                            shape2: { bg: '#0891b2', top: '-10%', left: '60%', size: '400px' }
+                        },
+                        title: { en: 'recvoicer', pl: 'recvoicer' },
+                        pages: [
+                            {
+                                type: 'hero',
+                                tags: { en: ['.NET MAUI', 'C#', 'Blazor'], pl: ['.NET MAUI', 'C#', 'Blazor'] },
+                                desc: { 
+                                    en: 'Cross-platform mobile application (Android & iOS) for recording, playing, editing, and deleting audio recordings locally.', 
+                                    pl: 'Wieloplatformowa aplikacja mobilna (Android, iOS) do nagrywania, odtwarzania, edytowania i usuwania notatek głosowych zapisywanych lokalnie.' 
+                                },
+                                link: 'https://github.com/PrzemyslawPytlarz/recvoicer'
+                            },
+                            {
+                                type: 'image',
+                                src: 'README-img/r1.jpg',
+                                caption: { en: 'Voice recorder screen', pl: 'Ekran rejestratora dźwięku' }
+                            },
+                            {
+                                type: 'skills',
+                                heading: { en: 'Tech Stack', pl: 'Technologie' },
+                                text: { en: 'Cross-platform framework and language.', pl: 'Rozwiązania wieloplatformowe i język aplikacji.' },
+                                items: [
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/csharp/csharp-original.svg', name: 'C#' },
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dotnetcore/dotnetcore-original.svg', name: '.NET MAUI' },
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg', name: 'Blazor' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: 'tictactoe',
+                        color: '#22c55e',
+                        blobs: {
+                            shape1: { bg: '#22c55e', top: '60%', left: '50%', size: '450px' },
+                            shape2: { bg: '#16a34a', top: '-20%', left: '10%', size: '350px' }
+                        },
+                        title: { en: 'Tic Tac Toe', pl: 'Kółko i Krzyżyk' },
+                        pages: [
+                            {
+                                type: 'hero',
+                                tags: { en: ['JavaScript', 'Firebase', 'Multiplayer'], pl: ['JavaScript', 'Firebase', 'Multiplayer'] },
+                                desc: { 
+                                    en: 'Online multiplayer Tic Tac Toe game where players connect to each other by entering a unique 4-digit room code.', 
+                                    pl: 'Gra w kółko i krzyżyk online. Gracze mogą łączyć się ze sobą w trybie multiplayer, wpisując 4-cyfrowy kod pokoju.' 
+                                },
+                                link: 'https://github.com/PrzemyslawPytlarz/TicTacToe'
+                            },
+                            {
+                                type: 'image',
+                                src: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=1200&q=80',
+                                caption: { en: 'Multiplayer connection', pl: 'Rozgrywka sieciowa' }
+                            },
+                            {
+                                type: 'skills',
+                                heading: { en: 'Tech Stack', pl: 'Technologie' },
+                                text: { en: 'Tools used for logic and real-time backend.', pl: 'Narzędzia wykorzystane do logiki i komunikacji.' },
+                                items: [
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg', name: 'JavaScript' },
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firebase/firebase-original.svg', name: 'Firebase 9' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: 'alerts-js',
+                        color: '#f97316', 
+                        blobs: {
+                            shape1: { bg: '#f97316', top: '10%', left: '80%', size: '400px' },
+                            shape2: { bg: '#ea580c', top: '50%', left: '-20%', size: '450px' }
+                        },
+                        title: { en: 'Alerts JS', pl: 'Alerts JS' },
+                        pages: [
+                            {
+                                type: 'hero',
+                                tags: { en: ['JavaScript', 'Library', 'UI'], pl: ['JavaScript', 'Biblioteka', 'UI'] },
+                                desc: { 
+                                    en: 'Lightweight JavaScript library for generating aesthetic notifications on websites with customizable types, timeout, and redirect options.', 
+                                    pl: 'Lekka biblioteka JavaScript do generowania estetycznych powiadomień (alertów) na stronach z opcją personalizacji, czasem zanikania i przekierowaniami.' 
+                                },
+                                link: 'https://github.com/PrzemyslawPytlarz/Alerts-JavaScript'
+                            },
+                            {
+                                type: 'image',
+                                src: 'readme-img/type.png',
+                                caption: { en: 'Different alert types', pl: 'Przykładowe typy powiadomień' }
+                            },
+                            {
+                                type: 'skills',
+                                heading: { en: 'Tech Stack', pl: 'Technologie' },
+                                text: { en: 'Standalone script without dependencies.', pl: 'Samodzielny skrypt bez zewnętrznych zależności.' },
+                                items: [
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg', name: 'JavaScript' },
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg', name: 'CSS3' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: 'carkur',
+                        color: '#a855f7',
+                        blobs: {
+                            shape1: { bg: '#a855f7', top: '30%', left: '-10%', size: '400px' },
+                            shape2: { bg: '#9333ea', top: '-5%', left: '50%', size: '500px' }
+                        },
+                        title: { en: 'Carkur', pl: 'Carkur' },
+                        pages: [
+                            {
+                                type: 'hero',
+                                tags: { en: ['JavaScript', 'Canvas', '2D Game'], pl: ['JavaScript', 'Canvas', 'Gra 2D'] },
+                                desc: { 
+                                    en: 'A 2D platform browser game utilizing arcade elements and physics, written in pure JavaScript using HTML Canvas.', 
+                                    pl: 'Przeglądarkowa gra platformowa 2D wykorzystująca elementy zręcznościowe i fizykę, napisana w czystym JS przy użyciu HTML Canvas.' 
+                                },
+                                link: 'https://github.com/PrzemyslawPytlarz/carkur'
+                            },
+                            {
+                                type: 'image',
+                                src: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80',
+                                caption: { en: 'Arcade platformer gameplay', pl: 'Zręcznościowa rozgrywka platformowa' }
+                            },
+                            {
+                                type: 'skills',
+                                heading: { en: 'Tech Stack', pl: 'Technologie' },
+                                text: { en: 'Technologies powering the game engine.', pl: 'Narzędzia napędzające logikę gry.' },
+                                items: [
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg', name: 'JavaScript' },
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg', name: 'HTML5 Canvas' }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: 'calculator',
+                        color: '#6366f1', 
+                        blobs: {
+                            shape1: { bg: '#6366f1', top: '70%', left: '60%', size: '480px' },
+                            shape2: { bg: '#4f46e5', top: '0%', left: '10%', size: '420px' }
+                        },
+                        title: { en: 'Calculator.cs', pl: 'Kalkulator C#' },
+                        pages: [
+                            {
+                                type: 'hero',
+                                tags: { en: ['C#', 'WPF', 'XAML'], pl: ['C#', 'WPF', 'XAML'] },
+                                desc: { 
+                                    en: 'A simple desktop calculator application built with WPF and C#, supporting basic arithmetic operations, powers, modulo, and calculation history.', 
+                                    pl: 'Prosty kalkulator okienkowy stworzony w WPF i C#. Obsługuje podstawowe działania arytmetyczne, potęgowanie, modulo oraz wyświetla historię obliczeń.' 
+                                },
+                                link: 'https://github.com/PrzemyslawPytlarz/calculator.cs'
+                            },
+                            {
+                                type: 'image',
+                                src: 'img/01.png',
+                                caption: { en: 'Calculator interface in action', pl: 'Interfejs kalkulatora w akcji' }
+                            },
+                            {
+                                type: 'skills',
+                                heading: { en: 'Tech Stack', pl: 'Technologie' },
+                                text: { en: 'Language and UI framework.', pl: 'Język i biblioteka interfejsu.' },
+                                items: [
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/csharp/csharp-original.svg', name: 'C#' },
+                                    { icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dotnetcore/dotnetcore-original.svg', name: 'WPF' }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        const userSysLang = navigator.language || navigator.userLanguage || 'en';
+        let currentLang = userSysLang.toLowerCase().startsWith('pl') ? 'pl' : 'en';
+        
+        let currentActiveId = null;
+        let activeProjectData = null; 
+        
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('menu-overlay');
+        const sidebarContent = document.getElementById('sidebar-content');
+        const scrollContainer = document.getElementById('scroll-container');
+        const dotsContainer = document.getElementById('pagination-dots');
+        
+        const shape1 = document.getElementById('shape1');
+        const shape2 = document.getElementById('shape2');
+
+        const observerOptions = {
+            root: scrollContainer,
+            threshold: 0.5 
+        };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('in-view');
+                    const index = parseInt(entry.target.dataset.pageIndex);
+                    updateActiveDot(index);
+                } else {
+                    entry.target.classList.remove('in-view');
+                }
+            });
+        }, observerOptions);
+
+        function toggleMobileMenu() {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        function getProjectById(id) {
+            for(let cat of portfolioData) {
+                for(let item of cat.items) {
+                    if(item.id === id) return item;
+                }
+            }
+            return null;
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            document.getElementById('btn-pl').classList.toggle('active', lang === 'pl');
+
+            document.getElementById('ui-title').innerText = staticTexts[lang].title;
+            document.getElementById('ui-subtitle').innerText = staticTexts[lang].subtitle;
+            document.getElementById('ui-contact').innerText = staticTexts[lang].contact;
+            document.getElementById('ui-github').innerText = staticTexts[lang].github;
+            document.getElementById('mobile-menu-btn').innerText = staticTexts[lang].menuBtn;
+
+            const activeIdToRestore = currentActiveId;
+
+            sidebarContent.innerHTML = '';
+            scrollContainer.innerHTML = '';
+            
+            observer.disconnect();
+            renderPortfolio();
+
+            const idToActivate = activeIdToRestore || portfolioData[0].items[0].id;
+            
+            currentActiveId = null; 
+            activateProject(idToActivate);
+        }
+
+        function renderPortfolio() {
+            let globalIndex = 1;
+
+            portfolioData.forEach(category => {
+                const categoryWrapper = document.createElement('div');
+                categoryWrapper.className = 'category-wrapper';
+
+                const categorySide = document.createElement('div');
+                categorySide.className = 'category-side';
+                
+                const bracket = document.createElement('div');
+                bracket.className = 'category-bracket';
+                
+                const categoryName = document.createElement('div');
+                categoryName.className = 'category-name';
+                categoryName.innerText = category.categoryName[currentLang]; 
+
+                categorySide.appendChild(bracket);
+                categorySide.appendChild(categoryName);
+                categoryWrapper.appendChild(categorySide);
+
+                const navList = document.createElement('ul');
+                navList.className = 'nav-list';
+
+                category.items.forEach(proj => {
+                    const li = document.createElement('li');
+                    li.className = 'nav-item';
+                    li.innerText = proj.title[currentLang];
+                    li.dataset.target = proj.id;
+                    li.dataset.index = globalIndex.toString().padStart(2, '0');
+                    
+                    li.style.setProperty('--item-color', proj.color);
+                    globalIndex++;
+                    
+                    li.addEventListener('mouseenter', () => {
+                        if (window.innerWidth > 900) activateProject(proj.id);
+                    });
+                    li.addEventListener('click', () => {
+                        activateProject(proj.id);
+                        if (window.innerWidth <= 900) toggleMobileMenu();
+                    });
+                    
+                    navList.appendChild(li);
+
+                    const detailDiv = document.createElement('div');
+                    detailDiv.className = 'project-details';
+                    detailDiv.id = `detail-${proj.id}`;
+                    detailDiv.style.setProperty('--item-color', proj.color);
+                    
+                    proj.pages.forEach((page, pageIdx) => {
+                        const pageDiv = document.createElement('div');
+                        pageDiv.className = 'snap-page';
+                        pageDiv.dataset.pageIndex = pageIdx;
+                        
+                        const contentDiv = document.createElement('div');
+                        contentDiv.className = 'snap-content';
+                        
+                        if (page.type === 'hero') {
+                            const tagsHtml = page.tags[currentLang].map(t => `<span class="tag">${t}</span>`).join('');
+                            
+                            const btnHtml = page.link 
+                                ? `<a href="${page.link}" target="_blank" class="project-link anim-item">${staticTexts[currentLang].btnDetails}</a>`
+                                : ``;
+
+                            contentDiv.innerHTML = `
+                                <div class="project-meta anim-item">${tagsHtml}</div>
+                                <h2 class="project-title anim-item">${proj.title[currentLang]}</h2>
+                                <p class="project-desc anim-item">${page.desc[currentLang]}</p>
+                                ${btnHtml}
+                            `;
+                            if (proj.pages.length > 1) {
+                                contentDiv.innerHTML += `
+                                    <div class="scroll-indicator anim-item">
+                                        <span class="scroll-arrow">↓</span> ${staticTexts[currentLang].scrollDown}
+                                    </div>
+                                `;
+                            }
+                        } else if (page.type === 'text') {
+                            contentDiv.innerHTML = `
+                                <h3 class="page-heading anim-item">${page.heading[currentLang]}</h3>
+                                <p class="page-text anim-item">${page.text[currentLang]}</p>
+                            `;
+                        } else if (page.type === 'image') {
+                            contentDiv.innerHTML = `
+                                <img src="${page.src}" alt="Screenshot" class="page-image anim-item">
+                                <p class="page-caption anim-item">${page.caption[currentLang]}</p>
+                            `;
+                        } else if (page.type === 'skills') {
+                            let skillsHtml = '';
+                            if (page.heading) {
+                                skillsHtml += `<h3 class="page-heading anim-item">${page.heading[currentLang]}</h3>`;
+                            }
+                            if (page.text) {
+                                skillsHtml += `<p class="page-text anim-item">${page.text[currentLang]}</p>`;
+                            }
+
+                            const gridItems = page.items.map((skill, idx) => `
+                                <div class="skill-item anim-item" style="transition-delay: ${0.15 + (idx * 0.05)}s;">
+                                    <img src="${skill.icon}" alt="${skill.name}" class="skill-icon">
+                                    <span class="skill-name">${skill.name}</span>
+                                </div>
+                            `).join('');
+                            
+                            skillsHtml += `<div class="skills-grid">${gridItems}</div>`;
+                            contentDiv.innerHTML = skillsHtml;
+                        } else if (page.type === 'list') {
+                            let listHtml = '';
+                            if (page.heading) {
+                                listHtml += `<h3 class="page-heading anim-item">${page.heading[currentLang]}</h3>`;
+                            }
+                            if (page.text) {
+                                listHtml += `<p class="page-text anim-item">${page.text[currentLang]}</p>`;
+                            }
+
+                            const listItemsHtml = page.items.map((item, idx) => `
+                                <li class="custom-list-item anim-item" style="transition-delay: ${0.15 + (idx * 0.05)}s;">
+                                    <span class="list-bullet"></span>
+                                    <span class="list-text">${item[currentLang]}</span>
+                                </li>
+                            `).join('');
+
+                            listHtml += `<ul class="custom-list">${listItemsHtml}</ul>`;
+                            contentDiv.innerHTML = listHtml;
+                        }
+                        
+                        pageDiv.appendChild(contentDiv);
+                        detailDiv.appendChild(pageDiv);
+                        
+                        observer.observe(pageDiv);
+                    });
+
+                    scrollContainer.appendChild(detailDiv);
+                });
+
+                categoryWrapper.appendChild(navList);
+                sidebarContent.appendChild(categoryWrapper);
+            });
+        }
+
+        function generatePagination(proj) {
+            dotsContainer.innerHTML = '';
+            
+            if (!proj || proj.pages.length <= 1) {
+                dotsContainer.classList.remove('visible');
+                return;
+            }
+
+            dotsContainer.style.setProperty('--item-color', proj.color);
+            dotsContainer.classList.add('visible');
+
+            proj.pages.forEach((page, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                if (index === 0) dot.classList.add('active'); 
+
+                dot.addEventListener('click', () => {
+                    const activeProjectDiv = document.getElementById(`detail-${proj.id}`);
+                    const pagesNodes = activeProjectDiv.querySelectorAll('.snap-page');
+                    if(pagesNodes[index]) {
+                        scrollContainer.scrollTo({
+                            top: pagesNodes[index].offsetTop,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+
+                dotsContainer.appendChild(dot);
+            });
+        }
+
+        function updateActiveDot(index) {
+            const dots = dotsContainer.querySelectorAll('.dot');
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+        }
+
+        function activateProject(id) {
+            if (currentActiveId === id) return;
+            currentActiveId = id;
+
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.toggle('active', el.dataset.target === id);
+            });
+
+            document.querySelectorAll('.project-details').forEach(el => {
+                el.classList.toggle('active', el.id === `detail-${id}`);
+            });
+            
+            scrollContainer.scrollTo({ top: 0, behavior: 'instant' });
+
+            const proj = getProjectById(id);
+            activeProjectData = proj;
+            
+            if (proj) {
+                generatePagination(proj);
+
+                if (proj.blobs) {
+                    shape1.style.backgroundColor = proj.blobs.shape1.bg;
+                    shape1.style.top = proj.blobs.shape1.top;
+                    shape1.style.left = proj.blobs.shape1.left;
+                    shape1.style.width = proj.blobs.shape1.size;
+                    shape1.style.height = proj.blobs.shape1.size;
+
+                    shape2.style.backgroundColor = proj.blobs.shape2.bg;
+                    shape2.style.top = proj.blobs.shape2.top;
+                    shape2.style.left = proj.blobs.shape2.left;
+                    shape2.style.width = proj.blobs.shape2.size;
+                    shape2.style.height = proj.blobs.shape2.size;
+                }
+            }
+        }
+
+        const contentArea = document.getElementById('content-area');
+        const bg = document.getElementById('interactive-bg');
+
+        let currentMouseX = window.innerWidth / 2;
+        let currentMouseY = window.innerHeight / 2;
+        let targetMouseX = window.innerWidth / 2;
+        let targetMouseY = window.innerHeight / 2;
+        
+        let currentLightOpacity = window.innerWidth > 900 ? 0 : 0.6;
+        let targetLightOpacity = window.innerWidth > 900 ? 0 : 0.6; 
+
+        // MOUSE MOVEMENT - Desktop
+        scrollContainer.addEventListener('mousemove', (e) => {
+            const rect = scrollContainer.getBoundingClientRect();
+            targetMouseX = e.clientX - rect.left;
+            targetMouseY = e.clientY - rect.top;
+        });
+
+        // TOUCH - Mobile devices (Flashlight follows finger)
+        scrollContainer.addEventListener('touchmove', (e) => {
+            const rect = scrollContainer.getBoundingClientRect();
+            targetMouseX = e.touches[0].clientX - rect.left;
+            targetMouseY = e.touches[0].clientY - rect.top;
+            targetLightOpacity = 1;
+        });
+
+        scrollContainer.addEventListener('mouseenter', () => {
+            if (window.innerWidth > 900) targetLightOpacity = 1;
+        });
+        scrollContainer.addEventListener('mouseleave', () => {
+            if (window.innerWidth > 900) targetLightOpacity = 0;
+        });
+        
+        scrollContainer.addEventListener('touchend', () => {
+            targetLightOpacity = 0.6;
+        });
+
+        function animateParallax() {
+            currentMouseX += (targetMouseX - currentMouseX) * 0.1;
+            currentMouseY += (targetMouseY - currentMouseY) * 0.1;
+            currentLightOpacity += (targetLightOpacity - currentLightOpacity) * 0.1;
+
+            if (contentArea) {
+                const rect = contentArea.getBoundingClientRect();
+                
+                bg.style.opacity = currentLightOpacity;
+                bg.style.background = `radial-gradient(220px circle at ${currentMouseX}px ${currentMouseY}px, #2a2a2a 0%, rgba(5,5,5,0) 100%)`;
+
+                const moveX = (currentMouseX - rect.width / 2) * 0.35;
+                const moveY = (currentMouseY - rect.height / 2) * 0.35;
+
+                const s1Rect = shape1.getBoundingClientRect();
+                const s2Rect = shape2.getBoundingClientRect();
+
+                const cx1 = s1Rect.left - rect.left + s1Rect.width / 2;
+                const cy1 = s1Rect.top - rect.top + s1Rect.height / 2;
+                
+                const cx2 = s2Rect.left - rect.left + s2Rect.width / 2;
+                const cy2 = s2Rect.top - rect.top + s2Rect.height / 2;
+
+                const dist1 = Math.hypot(currentMouseX - cx1, currentMouseY - cy1);
+                const dist2 = Math.hypot(currentMouseX - cx2, currentMouseY - cy2);
+
+                const rawGlow1 = Math.min(0.85, Math.max(0.05, 1 - (dist1 / 350)));
+                const rawGlow2 = Math.min(0.85, Math.max(0.05, 1 - (dist2 / 350)));
+
+                const glow1 = 0.05 + (rawGlow1 - 0.05) * currentLightOpacity;
+                const glow2 = 0.05 + (rawGlow2 - 0.05) * currentLightOpacity;
+
+                shape1.style.opacity = glow1;
+                shape2.style.opacity = glow2;
+
+                shape1.style.transform = `translate(${-moveX * 1.5}px, ${-moveY * 1.5}px) scale(${0.8 + glow1 * 0.5})`;
+                shape2.style.transform = `translate(${moveX}px, ${moveY}px) scale(${0.8 + glow2 * 0.5})`;
+            }
+            
+            requestAnimationFrame(animateParallax);
+        }
+        
+        animateParallax(); 
+        setLanguage(currentLang); 
+
+    </script>
+</body>
+</html>
