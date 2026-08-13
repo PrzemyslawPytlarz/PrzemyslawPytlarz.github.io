@@ -515,10 +515,17 @@
             color: #bbb;
         }
 
-        .page-image {
+        .image-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             width: 100%;
+        }
+
+        .page-image {
+            max-width: 100%;
             max-height: 55vh;
-            object-fit: cover;
+            object-fit: contain;
             border-radius: 12px;
             box-shadow: 0 15px 40px rgba(0,0,0,0.6);
             margin-bottom: 25px;
@@ -526,6 +533,8 @@
         }
 
         .page-caption {
+            align-self: flex-start;
+            width: 100%;
             font-size: 0.95rem;
             color: #888;
             font-style: italic;
@@ -1052,7 +1061,7 @@
                             },
                             {
                                 type: 'image',
-                                src: 'README_img/screenshot0.png',
+                                src: 'img/sketchnote.png',
                                 caption: { en: 'Main application view', pl: 'Główny widok aplikacji' }
                             },
                             {
@@ -1087,7 +1096,7 @@
                             },
                             {
                                 type: 'image',
-                                src: 'README_img/notes.png',
+                                src: 'img/notelist.png',
                                 caption: { en: 'Notes list interface', pl: 'Interfejs listy notatek' }
                             },
                             {
@@ -1122,7 +1131,7 @@
                             },
                             {
                                 type: 'image',
-                                src: 'README_img/9.gif',
+                                src: 'img/cataclysm.gif',
                                 caption: { en: 'Gameplay in action', pl: 'Rozgrywka w akcji' }
                             },
                             {
@@ -1157,7 +1166,7 @@
                             },
                             {
                                 type: 'image',
-                                src: 'README-img/r1.jpg',
+                                src: 'img/recvoicer.png',
                                 caption: { en: 'Voice recorder screen', pl: 'Ekran rejestratora dźwięku' }
                             },
                             {
@@ -1192,7 +1201,7 @@
                             },
                             {
                                 type: 'image',
-                                src: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=1200&q=80',
+                                src: 'img/tictactoe.png',
                                 caption: { en: 'Multiplayer connection', pl: 'Rozgrywka sieciowa' }
                             },
                             {
@@ -1226,7 +1235,7 @@
                             },
                             {
                                 type: 'image',
-                                src: 'readme-img/type.png',
+                                src: 'img/alertsjs.png',
                                 caption: { en: 'Different alert types', pl: 'Przykładowe typy powiadomień' }
                             },
                             {
@@ -1260,7 +1269,7 @@
                             },
                             {
                                 type: 'image',
-                                src: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80',
+                                src: 'img/carkur.png',
                                 caption: { en: 'Arcade platformer gameplay', pl: 'Zręcznościowa rozgrywka platformowa' }
                             },
                             {
@@ -1294,7 +1303,7 @@
                             },
                             {
                                 type: 'image',
-                                src: 'img/01.png',
+                                src: 'img/calculatorcs.png',
                                 caption: { en: 'Calculator interface in action', pl: 'Interfejs kalkulatora w akcji' }
                             },
                             {
@@ -1467,8 +1476,10 @@
                             `;
                         } else if (page.type === 'image') {
                             contentDiv.innerHTML = `
-                                <img src="${page.src}" alt="Screenshot" class="page-image anim-item">
-                                <p class="page-caption anim-item">${page.caption[currentLang]}</p>
+                                <div class="image-wrapper anim-item">
+                                    <img src="${page.src}" alt="Screenshot" class="page-image">
+                                    <p class="page-caption anim-item">${page.caption[currentLang]}</p>
+                                </div>
                             `;
                         } else if (page.type === 'skills') {
                             let skillsHtml = '';
