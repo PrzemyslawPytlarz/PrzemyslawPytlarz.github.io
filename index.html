@@ -64,6 +64,13 @@
             filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.5));
         }
 
+        .lang-btn img {
+            width: 32px;
+            height: 24px;
+            display: block;
+            border-radius: 20%;
+        }
+
         /* ----- BOTTOM LINKS (GITHUB & EMAIL) ----- */
         .bottom-links {
             position: absolute;
@@ -676,9 +683,6 @@
                 right: 20px;
                 gap: 10px;
             }
-            .lang-btn {
-                font-size: 1.4rem;
-            }
 
             .bottom-links {
                 top: 25px; 
@@ -749,8 +753,13 @@
     <div class="layout-container">
         
         <div class="lang-switcher">
-            <button class="lang-btn" id="btn-en" onclick="setLanguage('en')" title="English">🇬🇧</button>
-            <button class="lang-btn" id="btn-pl" onclick="setLanguage('pl')" title="Polski">🇵🇱</button>
+            <button class="lang-btn" id="btn-en" onclick="setLanguage('en')" title="English">
+                <img src="https://cdn.jsdelivr.net/npm/flag-icons/flags/4x3/gb.svg" alt="English">
+            </button>
+
+            <button class="lang-btn" id="btn-pl" onclick="setLanguage('pl')" title="Polski">
+                <img src="https://cdn.jsdelivr.net/npm/flag-icons/flags/4x3/pl.svg" alt="Polski">
+            </button>
         </div>
 
         <!-- Bottom Links Container (GitHub & Email) -->
